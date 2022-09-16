@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tweener : MonoBehaviour
 {
     private Tween activeTween;
-    private Vector3 current;
+    private float currentTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,12 +15,26 @@ public class Tweener : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        current = activeTween.Target.position;
-        if (Vector3.Distance(activeTween.EndPos, current) >0.1f)
+        if(activeTween != null)
         {
+            
+            if (Vector3.Distance(activeTween.Target.position, activeTween.EndPos ) > 0.1f)
+            {
+                currentTime = ((Time.time - activeTween.StartTime) / activeTween.Duration);
 
-            Vector3.Lerp(activeTween.StartPos, activeTween.EndPos, (Time.time - activeTween.StartTime) / activeTween.Duration);
+                activeTween.Target.position = Vector3.Lerp(activeTween.StartPos, activeTween.EndPos, currentTime) ;
+            }
+
+            if (Vector3.Distance(activeTween.Target.position, activeTween.EndPos) < 0.1f) 
+            {
+                activeTween.Target.position = activeTween.EndPos;
+
+                activeTween = null;
+
+            }
         }
+        
+
 
     }
 
